@@ -5,7 +5,33 @@ import uuid
 import os
 import json
 
+from flask import Response
+
+# create app early so decorators can reference it
 app = Flask(__name__)
+
+# Basic auth: if BASIC_AUTH_USER is set in the environment, require basic auth
+BASIC_AUTH_USER = os.environ.get('BASIC_AUTH_USER')
+BASIC_AUTH_PASS = os.environ.get('BASIC_AUTH_PASS')
+
+
+def check_basic_auth():
+    if not BASIC_AUTH_USER:
+        return True
+    auth = request.authorization
+    if not auth:
+        return False
+    return auth.username == BASIC_AUTH_USER and auth.password == BASIC_AUTH_PASS
+
+
+@app.before_request
+def require_basic_auth():
+    # allow access to static files without auth check
+    if request.path.startswith('/static/'):
+        return None
+    if not check_basic_auth():
+        return Response('Authentication required', 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
 
 def load_allowed_sources(path=None):
     default = [
@@ -97,7 +123,67 @@ def build_analysis(circumstances, cfda, recipient_type):
         "key_requirements": key_requirements,
         "suggestions": suggestions,
     }
+    # generate an LLM-style narrative summary and simple fact-check/risk assessment
+    result["narrative_summary"] = generate_narrative(result, circumstances, uploaded_text=None, recipient_type=recipient_type)
     return result
+
+
+def assess_risk(circumstances, uploaded_text, recipient_type):
+    score = 0
+    text = (circumstances or '').lower() + ' ' + (uploaded_text or '').lower() + ' ' + (recipient_type or '').lower()
+    keywords_high = ['fraud', 'overlap', 'unauthorized', 'noncompliance', 'penalty', 'debar', 'suspend']
+    keywords_med = ['indirect cost', 'matching', 'cost principles', 'audit', 'cost sharing', 'allowable']
+    for k in keywords_high:
+        if k in text:
+            score += 3
+    for k in keywords_med:
+        if k in text:
+            score += 1
+    # recipient type adjustments
+    if 'nonprofit' in text or 'tribal' in text:
+        score += 0
+    if score >= 4:
+        return 'High'
+    if score >= 2:
+        return 'Moderate'
+    return 'Low'
+
+
+def generate_narrative(analysis, circumstances, uploaded_text=None, recipient_type=None):
+    # Compose a multi-paragraph narrative that reads like an LLM summary
+    parts = []
+    # Opening summary
+    parts.append(f"Case summary: {analysis['summary']}")
+
+    # Authorities
+    auths = analysis.get('authorities', [])
+    if auths:
+        listed = ', '.join([a.get('title') or a.get('url') for a in auths[:3]])
+        parts.append(f"Primary authorities consulted: {listed}. Full reference list included in Additional References.")
+
+    # Compliance checks
+    checks = analysis.get('compliance_checks', [])
+    if checks:
+        chk_text = '; '.join([f"{c['section']} ({c['topic']})" for c in checks[:3]])
+        parts.append(f"Key compliance areas to review: {chk_text}.")
+
+    # Fact-check summary: count authorities that returned a fetched title vs raw URL
+    reachable = 0
+    for a in auths:
+        t = a.get('title','')
+        u = a.get('url','')
+        if t and t != u:
+            reachable += 1
+    parts.append(f"Fact-check: {reachable} of the primary sources returned identifiable titles when fetched; consult the Additional References for direct links and to verify effective dates.")
+
+    # Risk assessment
+    risk = assess_risk(circumstances, uploaded_text, recipient_type)
+    parts.append(f"Risk assessment (heuristic): {risk}. Recommended next steps: {', '.join(analysis.get('suggestions',[]))}.")
+
+    # Tone and opinion paragraph (cautious)
+    parts.append("Opinion: Based on the facts provided and the cited authorities, the situation appears to require targeted compliance review. This summary is an analytical opinion, not legal advice — confirm with counsel or agency policy before taking enforcement action.")
+
+    return "\n\n".join(parts)
 
 
 def extract_text_from_pdf(path):

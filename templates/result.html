@@ -64,6 +64,13 @@
       </section>
 
       <section class="box">
+        <h2>LLM-style Summary</h2>
+        <div class="summary-box">
+          <pre>{{ analysis.narrative_summary }}</pre>
+        </div>
+      </section>
+
+      <section class="box">
         <h2>Suggested Next Info & Actions</h2>
         <ul>
         {% for s in analysis.suggestions %}
