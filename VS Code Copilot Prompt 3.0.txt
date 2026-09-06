@@ -1,0 +1,71 @@
+Task:
+Develop a Python web application (with an index page and user interface) that enables users from the United States Forest Service to submit queries related to Federal Financial Assistance (Federal Grants). The application should provide summarized, authoritative responses based on regulatory rules and the full grants lifecycle (pre-award, post-award, closeout).
+
+Functional Requirements
+Core Functions:
+* Summarize user queries
+* Analyze facts and circumstances
+* Provide feedback
+* Assess risk and oversight
+Topic:
+Federal Financial Assistance (Federal Grants) — United States Forest Service
+User Input Requirements:
+1. Circumstances prompting research/monitoring (e.g., Indirect Cost, Matching Funds, Cost Principles, etc.)
+2. Optional background information: 
+o CFDA (Catalog of Federal Domestic Assistance)
+o Recipient Type (State agency | Tribal government | Local government | Nonprofit | IHE | Other)
+
+Response Structure
+* Case Summary & Applicable Authorities:
+Summarize the case and cite relevant authorities.
+* Compliance Checks:
+Reference 2 CFR Part 200 with section-level citations.
+* Additional References:
+Use other authoritative sources as needed.
+* Key Requirements:
+Highlight requirements, effective dates, and impacts on Federal Financial Assistance.
+
+Allowable Sources
+Primary citations:
+* https://www.ecfr.gov/current/title-2/subtitle-A/chapter-II/part-200
+* https://uscode.house.gov/view.xhtml?path=/prelim@title16/chapter41&edition=prelim
+* https://www.fs.usda.gov/about-agency/regulations-policies/handbook/150911-20-federal-financial-assi…
+* https://www.fs.usda.gov/sites/default/files/Bill-Language-IIJA.pdf
+* https://www.fs.usda.gov/sites/default/files/IIJA-Spend-Plan-all-2-11-2022.pdf
+* https://www.grants.gov
+* https://www.usaspending.gov
+* https://www.oversight.gov
+* https://www.bls.gov/bls/blswage.htm
+* https://www.fs.usda.gov/im/directives/
+* https://www.whitehouse.gov/omb/
+* https://uscode.house.gov/
+* https://govcio.com/
+* https://www.fac.gov/
+* http://www.gao.gov
+* https://www.ecfr.gov/current/title-2/subtitle-B/chapter-IV/part-400
+* https://www.sam.gov
+* Forest Service State, Private, & Tribal Forestry SharePoint Site
+* https://www.ecfr.gov/current/title-2/subtitle-A/chapter-I/part-180
+Behavior:
+* Use web search as needed, verifying links are official.
+* Validate effective dates; prefer latest codifications.
+
+Output Requirements
+* Detailed Summary:
+Summarize language found in citations used.
+* Explanatory Details:
+Include recipient type, grant instrument type, statutory authority, cost principles, and summary of statutory authority.
+* Formatting:
+Use clear headings, bullets, numbered steps, if/then scenarios, concise checklists as appropriate.
+* User Guidance:
+After initial response, suggest additional information and output options.
+
+User Interface Requirements
+* Theme: 
+o Black background
+o Light grey boxes with black text
+o Boxes have beveled silver border (1.5px width)
+* Chat Box: 
+o User can write and submit queries
+o Submission button included
+

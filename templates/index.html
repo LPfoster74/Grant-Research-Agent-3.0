@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Forest Service Grants Research</title>
+    <link rel="stylesheet" href="/static/style.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Forest Service Grants Research</h1>
+
+      <form action="/analyze" method="post">
+        <label for="circumstances">Circumstances prompting research/monitoring</label>
+        <textarea id="circumstances" name="circumstances" rows="6" required placeholder="e.g., Indirect Cost, Matching Funds, Cost Principles..."></textarea>
+
+        <label for="cfda">CFDA (optional)</label>
+        <input id="cfda" name="cfda" type="text" placeholder="e.g., 10.XXXXX">
+
+        <label for="recipient_type">Recipient Type</label>
+        <select id="recipient_type" name="recipient_type">
+          <option>State agency</option>
+          <option>Tribal government</option>
+          <option>Local government</option>
+          <option>Nonprofit</option>
+          <option>IHE</option>
+          <option selected>Other</option>
+        </select>
+
+        <div class="chatbox">
+          <label for="user_chat">Chat Box</label>
+          <textarea id="user_chat" name="user_chat" rows="4" placeholder="Optional: additional chat-style notes"></textarea>
+        </div>
+
+        <div class="actions">
+          <button type="submit">Submit Query</button>
+        </div>
+      </form>
+
+      <footer>
+        <small>Sources include 2 CFR Part 200, US Code, Grants.gov, USAspending.gov</small>
+      </footer>
+    </div>
+  </body>
+</html>
