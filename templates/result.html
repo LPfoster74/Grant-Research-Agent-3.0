@@ -20,6 +20,15 @@
       <section class="box">
         <h2>Case Summary & Applicable Authorities</h2>
         <p>{{ analysis.summary }}</p>
+        {% if analysis.uploaded_file %}
+        <p><strong>Uploaded file:</strong> {{ analysis.uploaded_file }}</p>
+        {% if analysis.uploaded_text_snippet %}
+        <details>
+          <summary>View extracted text snippet</summary>
+          <pre>{{ analysis.uploaded_text_snippet }}</pre>
+        </details>
+        {% endif %}
+        {% endif %}
         <ul>
         {% for a in analysis.authorities %}
           <li><a href="{{ a.url }}" target="_blank">{{ a.title }}</a> — {{ a.url }}</li>

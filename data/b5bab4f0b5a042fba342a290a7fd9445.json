@@ -1,0 +1,58 @@
+{
+  "summary": "User inquiry regarding: Matching funds verification needed for reforestation program (CFDA: 15.678). Recipient type: State agency.",
+  "authorities": [
+    {
+      "url": "https://www.ecfr.gov/current/title-2/subtitle-A/chapter-II/part-200",
+      "title": "Federal Register :: Request Access"
+    },
+    {
+      "url": "https://uscode.house.gov/view.xhtml?path=/prelim@title16/chapter41&edition=prelim",
+      "title": "16 USC Ch. 41: COOPERATIVE FORESTRY ASSISTANCE"
+    },
+    {
+      "url": "https://www.grants.gov",
+      "title": "Home | Grants.gov"
+    },
+    {
+      "url": "https://www.usaspending.gov",
+      "title": "USAspending.gov"
+    }
+  ],
+  "compliance_checks": [
+    {
+      "section": "2 CFR 200.400-200.475",
+      "topic": "Cost Principles (allowable costs, allocability, reasonableness)"
+    },
+    {
+      "section": "2 CFR 200.300-200.309",
+      "topic": "Pre-award requirements and risk assessment"
+    },
+    {
+      "section": "2 CFR 200.330-200.332",
+      "topic": "Subrecipient monitoring and pass-through entity responsibilities"
+    },
+    {
+      "section": "2 CFR 200.344",
+      "topic": "Closeout procedures"
+    }
+  ],
+  "additional_references": [
+    "https://www.ecfr.gov/current/title-2/subtitle-A/chapter-II/part-200",
+    "https://uscode.house.gov/view.xhtml?path=/prelim@title16/chapter41&edition=prelim",
+    "https://www.grants.gov",
+    "https://www.usaspending.gov",
+    "https://www.oversight.gov",
+    "https://www.ecfr.gov/current/title-2/subtitle-B/chapter-IV/part-400"
+  ],
+  "key_requirements": [
+    "Document cost allowability under 2 CFR Part 200 Subpart E",
+    "Perform risk-based monitoring for subrecipients and document oversight plans",
+    "Ensure matching funds are properly identified, allowable, and documented",
+    "Retain records per federal requirements and agency directives for audit readiness"
+  ],
+  "suggestions": [
+    "Provide estimated award amount and period of performance",
+    "Attach relevant contract/grant terms or bill language if available",
+    "Confirm whether recipient is a subrecipient or contractor"
+  ]
+}

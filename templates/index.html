@@ -10,7 +10,7 @@
     <div class="container">
       <h1>Forest Service Grants Research</h1>
 
-      <form action="/analyze" method="post">
+      <form action="/analyze" method="post" enctype="multipart/form-data">
         <label for="circumstances">Circumstances prompting research/monitoring</label>
         <textarea id="circumstances" name="circumstances" rows="6" required placeholder="e.g., Indirect Cost, Matching Funds, Cost Principles..."></textarea>
 
@@ -31,6 +31,9 @@
           <label for="user_chat">Chat Box</label>
           <textarea id="user_chat" name="user_chat" rows="4" placeholder="Optional: additional chat-style notes"></textarea>
         </div>
+
+        <label for="upload">Upload supporting document (PDF, DOCX, TXT)</label>
+        <input id="upload" name="upload" type="file" accept=".pdf,.docx,.txt">
 
         <div class="actions">
           <button type="submit">Submit Query</button>

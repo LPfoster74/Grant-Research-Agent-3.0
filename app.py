@@ -7,14 +7,39 @@ import json
 
 app = Flask(__name__)
 
-ALLOWED_SOURCES = [
-    "https://www.ecfr.gov/current/title-2/subtitle-A/chapter-II/part-200",
-    "https://uscode.house.gov/view.xhtml?path=/prelim@title16/chapter41&edition=prelim",
-    "https://www.grants.gov",
-    "https://www.usaspending.gov",
-    "https://www.oversight.gov",
-    "https://www.ecfr.gov/current/title-2/subtitle-B/chapter-IV/part-400",
-]
+def load_allowed_sources(path=None):
+    default = [
+        "https://www.ecfr.gov/current/title-2/subtitle-A/chapter-II/part-200",
+    ]
+    sources = []
+    base = os.path.dirname(__file__)
+    src_file = path or os.path.join(base, "allowed_sources.txt")
+    try:
+        with open(src_file, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                sources.append(line)
+    except Exception:
+        sources = default
+
+    # Ensure default 2 CFR Part 200 is present
+    if "https://www.ecfr.gov/current/title-2/subtitle-A/chapter-II/part-200" not in sources:
+        sources.insert(0, "https://www.ecfr.gov/current/title-2/subtitle-A/chapter-II/part-200")
+
+    # Deduplicate while preserving order
+    seen = set()
+    unique = []
+    for s in sources:
+        if s in seen:
+            continue
+        seen.add(s)
+        unique.append(s)
+    return unique
+
+
+ALLOWED_SOURCES = load_allowed_sources()
 
 
 def fetch_title(url):
@@ -75,6 +100,54 @@ def build_analysis(circumstances, cfda, recipient_type):
     return result
 
 
+def extract_text_from_pdf(path):
+    try:
+        from PyPDF2 import PdfReader
+        reader = PdfReader(path)
+        text = []
+        for page in reader.pages:
+            page_text = page.extract_text()
+            if page_text:
+                text.append(page_text)
+        return "\n".join(text)
+    except Exception:
+        return ""
+
+
+def extract_text_from_docx(path):
+    try:
+        import docx
+        doc = docx.Document(path)
+        paragraphs = [p.text for p in doc.paragraphs if p.text]
+        return "\n".join(paragraphs)
+    except Exception:
+        return ""
+
+
+def handle_upload(file_storage):
+    if not file_storage or file_storage.filename == "":
+        return None, None
+    folder = os.path.join(os.path.dirname(__file__), "uploads")
+    os.makedirs(folder, exist_ok=True)
+    filename = file_storage.filename
+    safe_name = f"{uuid.uuid4().hex}_{filename}"
+    path = os.path.join(folder, safe_name)
+    file_storage.save(path)
+    text = ""
+    fname = filename.lower()
+    if fname.endswith('.pdf'):
+        text = extract_text_from_pdf(path)
+    elif fname.endswith('.docx'):
+        text = extract_text_from_docx(path)
+    elif fname.endswith('.txt'):
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                text = f.read()
+        except Exception:
+            text = ""
+    return safe_name, text
+
+
 def save_analysis(result):
     folder = os.path.join(os.path.dirname(__file__), "data")
     os.makedirs(folder, exist_ok=True)
@@ -107,7 +180,16 @@ def analyze():
     if not circumstances:
         return redirect(url_for("index"))
 
+    # handle optional upload
+    upload = request.files.get('upload')
+    uploaded_name, uploaded_text = handle_upload(upload) if upload else (None, None)
+
     analysis = build_analysis(circumstances, cfda, recipient_type)
+    if uploaded_name:
+        analysis['uploaded_file'] = uploaded_name
+        snippet = (uploaded_text or '')[:2000]
+        analysis['uploaded_text_snippet'] = snippet
+
     uid = save_analysis(analysis)
     share_url = url_for("share", uid=uid, _external=True)
     return render_template("result.html", analysis=analysis, share_url=share_url)
