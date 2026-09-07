@@ -123,8 +123,9 @@ def build_analysis(circumstances, cfda, recipient_type):
         "key_requirements": key_requirements,
         "suggestions": suggestions,
     }
-    # generate an LLM-style narrative summary and simple fact-check/risk assessment
-    result["narrative_summary"] = generate_narrative(result, circumstances, uploaded_text=None, recipient_type=recipient_type)
+    # include recipient type for later regeneration and generate a narrative summary
+    result["recipient_type"] = recipient_type
+    result["narrative_summary"] = generate_narrative(result, circumstances, uploaded_text=None, recipient_type=recipient_type, verbosity='concise')
     return result
 
 
@@ -149,22 +150,30 @@ def assess_risk(circumstances, uploaded_text, recipient_type):
     return 'Low'
 
 
-def generate_narrative(analysis, circumstances, uploaded_text=None, recipient_type=None):
+def generate_narrative(analysis, circumstances, uploaded_text=None, recipient_type=None, verbosity='concise'):
     # Compose a multi-paragraph narrative that reads like an LLM summary
     parts = []
     # Opening summary
     parts.append(f"Case summary: {analysis['summary']}")
 
-    # Authorities
+    # If brief, give a short summary with risk and recommendation
+    if verbosity == 'brief' or verbosity == 'concise':
+        risk = assess_risk(circumstances, uploaded_text, recipient_type)
+        parts.append(f"Risk assessment (heuristic): {risk}. Recommended next steps: {', '.join(analysis.get('suggestions',[]))}.")
+        parts.append("Opinion: Based on the facts provided, a targeted compliance review is recommended. This is an analytical opinion, not legal advice.")
+        if verbosity == 'brief':
+            return "\n\n".join(parts)
+
+    # For detailed verbosity, include authorities and compliance checks
     auths = analysis.get('authorities', [])
     if auths:
-        listed = ', '.join([a.get('title') or a.get('url') for a in auths[:3]])
+        listed = ', '.join([a.get('title') or a.get('url') for a in auths[:5]])
         parts.append(f"Primary authorities consulted: {listed}. Full reference list included in Additional References.")
 
     # Compliance checks
     checks = analysis.get('compliance_checks', [])
     if checks:
-        chk_text = '; '.join([f"{c['section']} ({c['topic']})" for c in checks[:3]])
+        chk_text = '; '.join([f"{c['section']} ({c['topic']})" for c in checks])
         parts.append(f"Key compliance areas to review: {chk_text}.")
 
     # Fact-check summary: count authorities that returned a fetched title vs raw URL
@@ -275,6 +284,10 @@ def analyze():
         analysis['uploaded_file'] = uploaded_name
         snippet = (uploaded_text or '')[:2000]
         analysis['uploaded_text_snippet'] = snippet
+    # store recipient_type (also stored by build_analysis) and uploaded text for regeneration
+    analysis['recipient_type'] = recipient_type
+    if uploaded_name:
+        analysis['uploaded_text'] = uploaded_text
 
     uid = save_analysis(analysis)
     share_url = url_for("share", uid=uid, _external=True)
@@ -289,5 +302,38 @@ def share(uid):
     return render_template("result.html", analysis=data, share_url=request.url)
 
 
+@app.route('/narrative_regen', methods=['POST'])
+def narrative_regen():
+    payload = request.get_json() or {}
+    uid = payload.get('uid')
+    verbosity = payload.get('verbosity', 'concise')
+    if not uid:
+        return {'error': 'uid required'}, 400
+    analysis = load_analysis(uid)
+    if not analysis:
+        return {'error': 'analysis not found'}, 404
+
+    circumstances = analysis.get('summary', '')
+    uploaded_text = analysis.get('uploaded_text') or analysis.get('uploaded_text_snippet')
+    recipient_type = analysis.get('recipient_type')
+    new_summary = generate_narrative(analysis, circumstances, uploaded_text=uploaded_text, recipient_type=recipient_type, verbosity=verbosity)
+    # update stored analysis
+    analysis['narrative_summary'] = new_summary
+    try:
+        path = os.path.join(os.path.dirname(__file__), 'data', f"{uid}.json")
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(analysis, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+    return {'summary': new_summary}
+
+
+
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
+
+
+ 
+
