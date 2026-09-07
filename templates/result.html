@@ -66,10 +66,37 @@
       <section class="box">
         <h2>LLM-style Summary</h2>
         <div class="summary-box">
-          <pre>{{ analysis.narrative_summary }}</pre>
+          <pre id="narrative">{{ analysis.narrative_summary }}</pre>
+          <div class="llm-controls">
+            <label for="verbosity">Style:</label>
+            <select id="verbosity">
+              <option value="brief">Brief</option>
+              <option value="concise" selected>Concise</option>
+              <option value="detailed">Detailed</option>
+            </select>
+            <button id="regen">Regenerate</button>
+          </div>
+          <div id="regenStatus" style="margin-top:8px;color:#555"></div>
         </div>
       </section>
-      
+      <script>
+        document.getElementById('regen').addEventListener('click', async function(){
+          const status = document.getElementById('regenStatus');
+          status.textContent = 'Regenerating...';
+          const verbosity = document.getElementById('verbosity').value;
+          const uidMatch = window.location.pathname.match(/\/share\/(\w+)/);
+          const uid = uidMatch ? uidMatch[1] : null;
+          if (!uid){ status.textContent = 'Cannot regenerate: missing uid'; return; }
+          const resp = await fetch('/narrative_regen', {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({uid: uid, verbosity: verbosity})
+          });
+          const j = await resp.json();
+          if (j.error){ status.textContent = 'Error: ' + j.error; return; }
+          document.getElementById('narrative').textContent = j.summary;
+          status.textContent = 'Narrative updated.';
+        });
+      </script>
 
       <section class="box">
         <h2>Suggested Next Info & Actions</h2>

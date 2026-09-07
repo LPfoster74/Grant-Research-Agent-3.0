@@ -13,11 +13,21 @@ app = Flask(__name__)
 # Basic auth: if BASIC_AUTH_USER is set in the environment, require basic auth
 BASIC_AUTH_USER = os.environ.get('BASIC_AUTH_USER')
 BASIC_AUTH_PASS = os.environ.get('BASIC_AUTH_PASS')
+# Optionally trust an authenticated reverse proxy that sets a header (for SSO)
+# Set TRUST_AUTH_PROXY=1 and AUTH_PROXY_HEADER (default X-Remote-User) in the environment
+TRUST_AUTH_PROXY = os.environ.get('TRUST_AUTH_PROXY')
+AUTH_PROXY_HEADER = os.environ.get('AUTH_PROXY_HEADER', 'X-Remote-User')
 
 
 def check_basic_auth():
     if not BASIC_AUTH_USER:
         return True
+    # Allow bypass when a trusted proxy has authenticated the user and set a header
+    try:
+        if TRUST_AUTH_PROXY and (request.headers.get(AUTH_PROXY_HEADER) or request.environ.get('REMOTE_USER')):
+            return True
+    except Exception:
+        pass
     auth = request.authorization
     if not auth:
         return False
@@ -326,6 +336,22 @@ def narrative_regen():
     except Exception:
         pass
     return {'summary': new_summary}
+
+
+@app.route('/whoami')
+def whoami():
+    # Only allow this test endpoint when TRUST_AUTH_PROXY is enabled to avoid leaking info
+    try:
+        if not TRUST_AUTH_PROXY:
+            return {'error': 'TRUST_AUTH_PROXY not enabled'}, 403
+    except Exception:
+        return {'error': 'server misconfigured'}, 500
+
+    user = request.headers.get(AUTH_PROXY_HEADER) or request.environ.get('REMOTE_USER') or None
+    # fallback to basic auth username if present
+    if not user and request.authorization:
+        user = request.authorization.username
+    return {'user': user or 'anonymous'}
 
 
 

@@ -1,0 +1,9 @@
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . /app
+RUN mkdir -p /app/uploads /app/data
+EXPOSE 8080
+ENV PORT=8080
+CMD ["waitress-serve", "--listen=0.0.0.0:8080", "app:app"]
