@@ -1,0 +1,71 @@
+{
+  "summary": "User inquiry regarding: What are the match requirements for Wood Innovations (CFDA: 10.674). Recipient type: State agency.",
+  "authorities": [
+    {
+      "url": "https://www.ecfr.gov/current/title-2/subtitle-A/chapter-II/part-200",
+      "title": "Federal Register :: Request Access"
+    },
+    {
+      "url": "https://uscode.house.gov/view.xhtml?path=/prelim@title16/chapter41&edition=prelim",
+      "title": "https://uscode.house.gov/view.xhtml?path=/prelim@title16/chapter41&edition=prelim"
+    },
+    {
+      "url": "https://www.fs.usda.gov/about-agency/regulations-policies/handbook/150911-20-federal-financial-assi…",
+      "title": "https://www.fs.usda.gov/about-agency/regulations-policies/handbook/150911-20-federal-financial-assi…"
+    },
+    {
+      "url": "https://www.fs.usda.gov/sites/default/files/Bill-Language-IIJA.pdf",
+      "title": "https://www.fs.usda.gov/sites/default/files/Bill-Language-IIJA.pdf"
+    }
+  ],
+  "compliance_checks": [
+    {
+      "section": "2 CFR 200.400-200.475",
+      "topic": "Cost Principles (allowable costs, allocability, reasonableness)"
+    },
+    {
+      "section": "2 CFR 200.300-200.309",
+      "topic": "Pre-award requirements and risk assessment"
+    },
+    {
+      "section": "2 CFR 200.330-200.332",
+      "topic": "Subrecipient monitoring and pass-through entity responsibilities"
+    },
+    {
+      "section": "2 CFR 200.344",
+      "topic": "Closeout procedures"
+    }
+  ],
+  "additional_references": [
+    "https://www.ecfr.gov/current/title-2/subtitle-A/chapter-II/part-200",
+    "https://uscode.house.gov/view.xhtml?path=/prelim@title16/chapter41&edition=prelim",
+    "https://www.fs.usda.gov/about-agency/regulations-policies/handbook/150911-20-federal-financial-assi…",
+    "https://www.fs.usda.gov/sites/default/files/Bill-Language-IIJA.pdf",
+    "https://www.fs.usda.gov/sites/default/files/IIJA-Spend-Plan-all-2-11-2022.pdf",
+    "https://www.grants.gov",
+    "https://www.usaspending.gov",
+    "https://www.oversight.gov",
+    "https://www.bls.gov/bls/blswage.htm",
+    "https://www.fs.usda.gov/im/directives/",
+    "https://www.whitehouse.gov/omb/",
+    "https://uscode.house.gov/",
+    "https://www.fac.gov/",
+    "https://www.ecfr.gov/current/title-2/subtitle-B/chapter-IV/part-400",
+    "https://www.sam.gov",
+    "https://www.ecfr.gov/current/title-2/subtitle-A/chapter-I/part-180",
+    "https://www.govinfo.gov"
+  ],
+  "key_requirements": [
+    "Document cost allowability under 2 CFR Part 200 Subpart E",
+    "Perform risk-based monitoring for subrecipients and document oversight plans",
+    "Ensure matching funds are properly identified, allowable, and documented",
+    "Retain records per federal requirements and agency directives for audit readiness"
+  ],
+  "suggestions": [
+    "Provide estimated award amount and period of performance",
+    "Attach relevant contract/grant terms or bill language if available",
+    "Confirm whether recipient is a subrecipient or contractor"
+  ],
+  "recipient_type": "State agency",
+  "narrative_summary": "Case summary: User inquiry regarding: What are the match requirements for Wood Innovations (CFDA: 10.674). Recipient type: State agency.\n\nRisk assessment (heuristic): Low. Recommended next steps: Provide estimated award amount and period of performance, Attach relevant contract/grant terms or bill language if available, Confirm whether recipient is a subrecipient or contractor.\n\nOpinion: Based on the facts provided, a targeted compliance review is recommended. This is an analytical opinion, not legal advice.\n\nPrimary authorities consulted: Federal Register :: Request Access, https://uscode.house.gov/view.xhtml?path=/prelim@title16/chapter41&edition=prelim, https://www.fs.usda.gov/about-agency/regulations-policies/handbook/150911-20-federal-financial-assi…, https://www.fs.usda.gov/sites/default/files/Bill-Language-IIJA.pdf. Full reference list included in Additional References.\n\nKey compliance areas to review: 2 CFR 200.400-200.475 (Cost Principles (allowable costs, allocability, reasonableness)); 2 CFR 200.300-200.309 (Pre-award requirements and risk assessment); 2 CFR 200.330-200.332 (Subrecipient monitoring and pass-through entity responsibilities); 2 CFR 200.344 (Closeout procedures).\n\nFact-check: 1 of the primary sources returned identifiable titles when fetched; consult the Additional References for direct links and to verify effective dates.\n\nRisk assessment (heuristic): Low. Recommended next steps: Provide estimated award amount and period of performance, Attach relevant contract/grant terms or bill language if available, Confirm whether recipient is a subrecipient or contractor.\n\nOpinion: Based on the facts provided and the cited authorities, the situation appears to require targeted compliance review. This summary is an analytical opinion, not legal advice — confirm with counsel or agency policy before taking enforcement action."
+}
