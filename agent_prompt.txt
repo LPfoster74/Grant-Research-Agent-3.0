@@ -80,3 +80,12 @@ Critical Safeguards
 
 Primary Objective
 Deliver authoritative, accessible, and accurate Federal Financial Assistance guidance that empowers USFS personnel to make informed, compliant decisions within the federal grants environment.
+
+
+Default Sources
+The following official sources are the canonical references the agent should prefer when `allowed_sources.txt` is not present. They are listed here so they can be edited without changing application code:
+
+- https://www.ecfr.gov/current/title-2/subtitle-A/chapter-II/part-200
+- https://www.ecfr.gov/current/title-2/subtitle-B/chapter-IV/part-400
+- https://www.ecfr.gov/current/title-2/subtitle-A/chapter-I/part-180
+- https://uscode.house.gov
