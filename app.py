@@ -40,19 +40,11 @@ Provide Actionable Guidance
 • Highlight regulatory requirements, compliance obligations, limitations, and timelines.
 """
 
-# Default authoritative sources (can be extended via allowed_sources.txt)
-DEFAULT_SOURCES = [
-    "https://www.ecfr.gov/current/title-2/subtitle-A/chapter-II/part-200",
-    "https://www.ecfr.gov/current/title-2/subtitle-B/chapter-IV/part-400",
-    "https://www.ecfr.gov/current/title-2/subtitle-A/chapter-I/part-180",
-    "https://uscode.house.gov",
-]
-
-
 def load_allowed_sources(path=None):
     base = os.path.dirname(__file__)
     src = path or os.path.join(base, "allowed_sources.txt")
     sources = []
+    # 1) Try explicit allowed_sources.txt
     try:
         with open(src, "r", encoding="utf-8") as f:
             for line in f:
@@ -61,11 +53,22 @@ def load_allowed_sources(path=None):
                     continue
                 sources.append(line)
     except Exception:
-        sources = []
-    # ensure defaults present
-    for d in DEFAULT_SOURCES:
-        if d not in sources:
-            sources.append(d)
+        # 2) Fallback: parse agent_prompt.txt for Default Sources URLs
+        try:
+            prompt_path = os.path.join(base, 'agent_prompt.txt')
+            if os.path.exists(prompt_path):
+                import re
+                with open(prompt_path, 'r', encoding='utf-8') as f:
+                    text = f.read()
+                # find http(s) URLs listed under "Default Sources" section if present
+                # simple URL regex
+                urls = re.findall(r'https?://[\w\-./%?=&]+', text)
+                for u in urls:
+                    if u not in sources:
+                        sources.append(u)
+        except Exception:
+            sources = []
+
     # dedupe preserving order
     seen = set()
     unique = []
