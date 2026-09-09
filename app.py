@@ -78,6 +78,28 @@ def load_allowed_sources(path=None):
 ALLOWED_SOURCES = load_allowed_sources()
 
 
+def load_agent_prompt(path=None):
+    base = os.path.dirname(__file__)
+    candidates = []
+    if path:
+        candidates.append(path)
+    # primary agent prompt file
+    candidates.append(os.path.join(base, 'agent_prompt.txt'))
+    # fallback to existing prompt file if present
+    candidates.append(os.path.join(base, 'VS Code Copilot Prompt 3.0.txt'))
+    for p in candidates:
+        try:
+            if os.path.exists(p):
+                with open(p, 'r', encoding='utf-8') as f:
+                    return f.read()
+        except Exception:
+            continue
+    return ''
+
+
+AGENT_PROMPT = load_agent_prompt()
+
+
 def fetch_title(url):
     try:
         resp = requests.get(url, timeout=5)
@@ -133,6 +155,8 @@ def build_analysis(circumstances, cfda, recipient_type):
         "key_requirements": key_requirements,
         "suggestions": suggestions,
     }
+    # include agent prompt text used by the app so results are reproducible
+    result['agent_prompt'] = AGENT_PROMPT
     # include recipient type for later regeneration and generate a narrative summary
     result["recipient_type"] = recipient_type
     result["narrative_summary"] = generate_narrative(result, circumstances, uploaded_text=None, recipient_type=recipient_type, verbosity='concise')
